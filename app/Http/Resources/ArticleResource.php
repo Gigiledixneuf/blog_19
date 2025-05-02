@@ -28,7 +28,7 @@ class ArticleResource extends JsonResource
             'likes' => $this->likes_count,
             'category' => CategoryResource::collection($this->categories),
             'date_creation' => Carbon::parse($this->created_at)->diffForHumans(),
-            'last_modif' => $this->updated_at,
+            'last_modif' => Carbon::parse($this->updated_at)->diffForHumans(),
         ];
     }
 }
