@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CategoryController;
 use \App\Http\Controllers\CommentController;
 use \App\Http\Controllers\LikeController;
 use \App\Http\Controllers\SocialiteController;
@@ -16,8 +17,8 @@ Route::get('/auth/oauth/{provider}/callback', [SocialiteController::class, 'call
 
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::get('/all', [ArticleController::class, 'index']);
-Route::apiResource('/comments',CommentController::class);
+Route::get('/all_articles', [ArticleController::class, 'index']);
+Route::get('/comments',[CommentController::class, 'index']);
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
@@ -26,5 +27,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/comment', [CommentController::class, 'store']);
     Route::apiResource('/articles', ArticleController::class)->except('index');
+    Route::apiResource('/categories', CategoryController::class);
 
 });
