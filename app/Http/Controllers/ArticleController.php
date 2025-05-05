@@ -26,31 +26,34 @@ class ArticleController extends Controller
 
 
 
-    public function store(ArticleRequest $request)
-    {
-        try {
-            $data=$request->validated();
-            $image = $request->file('picture');
-
-            $data['picture']= $image->store('articles','public');
-
-            $data['user_id']=auth()->user()->id;
-            $article=Article::create($data);
-
-            $article->categories()->attach($request->validated('categories'));
-
-            return response()->json([
-                'message' => 'Post added successfully',
-                'article' => $article,
-            ], 201);
-
-
-
-        } catch (\Exception $exception) {
-
-            return response()->json(['error' => 'An error occurred: ' . $exception->getMessage()], 500);
-        }
-    }
+     public function store(ArticleRequest $request)
+     {
+         try {
+             $data = $request->validated();
+     
+             if ($request->hasFile('picture')) {
+                 $image = $request->file('picture');
+                 $data['picture'] = $image->store('articles', 'public');
+             }
+     
+             $data['user_id'] = auth()->id();
+             $article = Article::create($data);
+     
+             $article->categories()->attach($request->validated('categories'));
+             
+            
+             return response()->json([
+                 'message' => 'Post added successfully',
+                 'article' => $article,
+             ], 201);
+     
+         } catch (\Exception $exception) {
+             return response()->json([
+                 'error' => 'An error occurred: ' . $exception->getMessage()
+             ], 500);
+         }
+     }
+     
 
     /**
      * Display the specified resource.
@@ -93,6 +96,8 @@ class ArticleController extends Controller
 
             // Update the categories (detach old ones and attach new ones)
             $article->categories()->sync($request->validated('categories'));
+
+            dd($article);
 
             return response()->json([
                 'message' => 'Post updated successfully',
